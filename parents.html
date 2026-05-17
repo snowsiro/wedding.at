@@ -1464,8 +1464,8 @@
 </div><!-- /page-wrap -->
 
 <!-- RSVP MODAL (outside page-wrap for correct full-screen fixed positioning) -->
-<div class="rsvp-modal-overlay" id="rsvp-modal">
-  <div class="rsvp-modal">
+<div class="rsvp-modal-overlay" id="rsvp-modal" onclick="closeRsvpOnOverlay(event)">
+  <div class="rsvp-modal" onclick="event.stopPropagation()">
     <button class="rsvp-modal-close" onclick="closeRsvpModal()">✕</button>
     <div class="rsvp-modal-label">RSVP</div>
     <h3 class="rsvp-modal-title" data-ko="참석 여부 전달" data-en="RSVP" data-de="Rückmeldung">참석 여부 전달</h3>
@@ -1912,16 +1912,11 @@
     document.body.style.overflow = '';
   }
   function closeRsvpOnOverlay(e) {
-    // 사용하지 않음 - addEventListener로 대체
+    if (e.target === document.getElementById('rsvp-modal')) closeRsvpModal();
   }
-  document.getElementById('rsvp-modal').addEventListener('click', function(e) {
-    if (e.target === this) closeRsvpModal();
-  });
-  document.querySelector('#rsvp-modal .rsvp-modal').addEventListener('click', function(e) {
-    e.stopPropagation();
-  });
 
   var rsvpChoice = null;
+  var venueChoice = { ceremony: false, afterparty: false };
   function selectRsvp(choice) {
     rsvpChoice = choice;
     document.getElementById('opt-attend').classList.toggle('selected', choice === 'attend');
