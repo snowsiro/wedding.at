@@ -1832,7 +1832,10 @@
       return '<div style="background:white;border-left:2px solid var(--gold-light);padding:0.8rem 1rem;margin-bottom:0.6rem;">'
         + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.3rem;">'
         + '<span style="font-weight:500;font-size:0.9rem;">' + d.name + '</span>'
+        + '<span style="display:flex;align-items:center;gap:0.6rem;">'
         + '<span style="font-size:0.8rem;color:var(--text-mid);">' + attendLabel + '</span>'
+        + '<button onclick="deleteRsvp(\'' + d.id + '\')" style="background:none;border:1px solid rgba(184,151,90,0.3);color:var(--text-light);font-size:0.65rem;padding:0.2rem 0.5rem;cursor:pointer;letter-spacing:0.05em;font-family:\'Noto Serif KR\',serif;">삭제</button>'
+        + '</span>'
         + '</div>'
         + '<div style="font-size:0.75rem;color:var(--text-light);">인원: ' + (d.count || '-') + '명 &nbsp;|&nbsp; ' + venueStr + '</div>'
         + (d.msg ? '<div style="font-size:0.8rem;color:var(--text-mid);margin-top:0.3rem;">' + d.msg + '</div>' : '')
@@ -2010,6 +2013,7 @@
         ? new Date(d.createdAt.toMillis()).toLocaleDateString('ko-KR')
         : '';
       data.push({
+        id: snap.id,
         name: d.name,
         attend: d.attend,
         count: d.count,
@@ -2053,6 +2057,18 @@
     try {
       await deleteDoc(doc(db, 'guestbook', id));
       showToast('방명록이 삭제되었습니다');
+    } catch(err) {
+      console.error(err);
+      showToast('삭제에 실패했습니다');
+    }
+  };
+
+  // RSVP 삭제
+  window.deleteRsvp = async function(id) {
+    if (!confirm('이 참석 정보를 삭제할까요?')) return;
+    try {
+      await deleteDoc(doc(db, 'rsvp', id));
+      showToast('삭제되었습니다');
     } catch(err) {
       console.error(err);
       showToast('삭제에 실패했습니다');
